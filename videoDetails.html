@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>videoDetails</title>
+    <link rel="icon" href="../Picture/icons8-youtube-94 (1).png"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="./YoutubeProject.css">  
+</head>
+<body>
+    <div class="container">
+        <div class="header-container">
+            <div class="header">
+                <!-- Navigation Element -->
+                <a href="./YoutubeProject.html" class="side">
+                    <img src="../Picture/icons8-home-48.png" alt="Home Icon">
+                    <li>Home</li>
+                </a>
+            </div>
+        </div>
+        <div class="contents">
+            <div class="left">
+            
+            </div>
+
+            <div class="videoDetails">
+                <div class="videotitle">
+                    <div class="videoSection"></div>
+                    <div class="videoTitle"></div>
+                </div>
+            </div>
+            <div class="autovideo"></div>
+        </div>
+    </div>
+
+    <script src="./common/header.js"></script>
+    <script src="./common/sidebar.js"></script>
+    <script src="./common/search.js"></script>
+    <script src="./common/popup.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const url = window.location.href;
+            const videoId = url.split("v=")[1];
+            const videoDetailUrl = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}&key=AIzaSyDvQlyZ5U34X06chtOSlI-WYdIyqU5kop4`;
+
+            const videoIframe = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+            document.getElementsByClassName("videoSection")[0].innerHTML = videoIframe;
+
+            const fetchVideoData = async () => {
+                const fetchVideo = await fetch(videoDetailUrl);
+                const videoData = await fetchVideo.json();
+                generateTitleHtml(videoData.items);
+            }
+
+            const generateTitleHtml = (items) => {
+                let videoData = '';
+                items?.forEach(({ snippet }) => {
+                    videoData = `<h3>${snippet.title}</h3>
+                    <div class="title">
+                        <div class="titlesub">
+                            <h4><span class="hi"><img src="../Picture/channels4_profile (1).jpg">WebDevelopment</h4> 
+                            <p>1.3K Subscribers</p>
+                        </div>
+                        <div class="titlesubs">
+                            <h2>Subscribe</h2>
+                        </div>   
+                        <div class="titlesubss">
+                            <span  id="likeButton" class="material-icons">thumb_up</span>
+                            <span id="likeButton"class="material-icons">thumb_down</span>
+                            <span id="likeButton"class="material-icons">download</span>
+                            <span id="shareButton" class="material-icons">share</span>
+                        </div> 
+                        <div class="popup" id="sharePopup">
+                            <div class="detailss">
+                                <span class="close-btn">&times;</span>
+                                <span class="shareuh"><h3>Share in a post</h3></span>
+                                <span class="create"><h4>Create post</h4></span>
+                                <span class="shareuh"><h4>No Subscribers</h4></span>
+                            </div>  
+                            <hr>
+                            <div class="sharee">
+                                <span class="shareuuh"><h2>Share</h2></span>
+                                <ul class="listapp">
+                                    <li class="changeimage" data-link="https://link1dtyuugjojouguih.com"><img src="../Picture/png-transparent-computer-icons-alphanumeric-black-circle-greater-than-sign-icon-miscellaneous-angle-desktop-wallpaper-thumbnail.png"/></li>
+                                    <li class="changeimage" data-link="https://link2gcfugkfikughhhi.com"><img src="../Picture/whatapp.jpeg"/></li>
+                                    <li class="changeimage" data-link="https://link3xtrdtuftglgy78y.com"><img src="../Picture/download.png"/></li>
+                                    <li class="changeimage" data-link="https://link4ftyugtdrezxbbvh.com"><img src="../Picture/Mail.png"/></li>
+                                    <li class="changeimage" data-link="https://link5ytfuygyudtrtfgg.com"><img src="../Picture/Google_Chrome_icon_(2011).png"/></li>
+                                    <li class="changeimage" data-link="https://link6tytfytfyftyfyts.com"><img src="../Picture/Shareme.png"/></li>
+                                </ul>
+                            </div>
+                            <div class="copy">
+                                <input type="text" id="link-input" value="https://youtu.be/-IJwMoGL1d8?si=pvu5XcCDTkWRw2vx">
+                                <button class="opened" id="copyButton">Copy</button>
+                            </div>
+                            <hr>
+                            <input type="checkbox">Start at 2:01</input> 
+                        </div>   
+                    </div>`;
+                });
+                document.getElementsByClassName("videoTitle")[0].innerHTML = videoData;
+
+                // Copy Button Functionality
+                document.getElementById("copyButton").addEventListener('click', async () => {
+                    const linkInput = document.getElementById("link-input");
+                    linkInput.select();  
+                    try {
+                        await navigator.clipboard.writeText(linkInput.value);
+                        document.getElementById("copyButton").innerText = "Copied";
+                        setTimeout(() => {
+                            document.getElementById("copyButton").innerText = "Copy";
+                        }, 5000);
+                    } catch (err) {
+                        console.error("Failed to copy text:", err);
+                        document.getElementById("copyButton").innerText = "Failed to Copy";
+                    }
+                });
+
+                // Share Button Functionality
+                document.getElementById("shareButton").addEventListener("click", () => {
+                    const sharePopup = document.getElementById("sharePopup");
+                    sharePopup.style.display = sharePopup.style.display === "block" ? "none" : "block";
+                });
+
+                // Close Button Functionality
+                document.querySelector(".close-btn").addEventListener("click", () => {
+                    const sharePopup = document.getElementById("sharePopup");
+                    sharePopup.style.display = "none";
+                });
+
+                // Change Image Click Functionality
+                document.querySelectorAll(".changeimage").forEach((element) => {
+                    element.addEventListener("click", () => {
+                        const link = element.getAttribute("data-link"); 
+                        const linkInput = document.getElementById("link-input");
+                        linkInput.value = link;
+                    });
+                });
+            }
+            fetchVideoData();
+
+            const getVideos = async () => {
+                const videoList = await fetch("https://youtube.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&locale=english&maxResults=50&regionCode=IN&key=AIzaSyDvQlyZ5U34X06chtOSlI-WYdIyqU5kop4");
+                const videoData = await videoList.json();
+                generateVideoHtml(videoData.items);
+            }
+
+            const trimContent = (content, maxLength) => {
+                return content.length > maxLength ? content.substring(0, maxLength) + '...' : content;
+            }
+
+            const generateVideoHtml = (items) => {
+                let videoHtml = '';
+                items?.forEach(({ snippet, id }) => {
+                    const trimmedChannelTitle = trimContent(snippet.channelTitle, 20);
+                    const trimmedTitle = trimContent(snippet.title, 10);
+                    const trimmedPublishedAt = trimContent(snippet.publishedAt, 10);
+                    
+                    videoHtml += `<div class="image12">
+                        <div class="image2">
+                            <a href="./videoDetails.html?v=${id}"><img src=${snippet?.thumbnails?.medium?.url} alt=""></a>
+                        </div>
+                        <div class="image3">
+                            <span class="hi"><img src="../Picture/channels4_profile (1).jpg"> ${snippet.channelTitle}</span>
+                            <p>${trimmedTitle}</p>
+                            <p>${snippet.publishedAt}<span class="fullstop">.</span>1 week ago</p> 
+                        </div>                  
+                    </div>`;
+                });
+                document.getElementsByClassName("autovideo")[0].innerHTML = videoHtml;
+            }
+            getVideos();
+
+            const toggleMenu = () => {
+                document.getElementsByClassName("contents")[0].classList.toggle("closeMenu");
+                document.getElementsByClassName("sidebar")[0].classList.toggle("closeMenu");
+                document.getElementsByClassName("videoSection")[0].classList.toggle("closeMenu");
+                
+            }
+            document.getElementById("menuIcon").addEventListener("click", () => {
+                toggleMenu();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>searchresults</title>
+    <link rel="icon" href="../Picture/icons8-youtube-94 (1).png"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+      <link rel="stylesheet" href="./YoutubeProject.css">
+</head> 
+<body>
+    <div class="container">
+        <div class="header-container">
+            <div class="header">
+         
+            </div>
+        </div>
+        <div class="contents">
+            <div class="left">
+                    
+
+            </div>
+
+            <div class="videoDetails">
+                <div class="videotitle">
+                    <div class="videoSection">
+
+                    </div>
+                    <div class="videoTitle">
+                                
+                    </div>
+                </div>
+            </div>
+            <div class="searchresults">
+
+            </div>   
+        </div>
+    </div> 
+    <script src="./common/header.js"></script>
+    <script src="./common/sidebar.js"></script>
+    <script>
+
+
+const searchResults = ()=>{
+            const resultData = JSON.parse(localStorage.getItem("searchResults"));
+            generateVideoHtml(resultData);
+        }
+
+const trimContent = (content, maxLength) => {
+    return content.length > maxLength ? content.substring(0, maxLength) + '...' : content;
+}
+
+const generateVideoHtml = (items) => {
+    let videoHtml = '';
+    
+    items?.forEach(({ snippet, id }) => {
+        const trimmedChannelTitle = trimContent(snippet.channelTitle, 20);
+        const trimmedTitle = trimContent(snippet.title, 30);
+        const trimmedPublishedAt = trimContent(snippet.publishedAt, 10);
+        
+        videoHtml += `
+            <div class="image">
+                <div class="image2">
+                    <a href="./videoDetails.html?v=${id}">
+                        <img src="${snippet?.thumbnails?.medium?.url}" alt="${snippet.title}">
+                        <span class="hi">
+                            <img src="../Picture/channels4_profile (1).jpg" alt="Channel Thumbnail"> ${trimmedChannelTitle}
+                        </span>
+                        <p>${trimmedTitle}</p>
+                        <p>${trimmedPublishedAt}<span class="fullstop">.</span>1 week ago</p>
+                    </a>
+                </div>                  
+            </div>`;
+    });
+    
+    document.getElementsByClassName("searchresults")[0].innerHTML = videoHtml;
+}
+
+searchResults();
+        
+        
+
+    </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
